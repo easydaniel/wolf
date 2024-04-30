@@ -1,12 +1,7 @@
 const { Pool, Client } = require("pg");
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl:
-    process.env.NODE_ENV === "dev"
-      ? false
-      : {
-          rejectUnauthorized: false,
-        },
+  connectionString: "postgresql://postgres:test@db/postgres",
+  ssl: false,
 });
 
 class Db {
@@ -869,7 +864,7 @@ FROM public.game_event where name=$1;
       pId += 1;
     }
 
-    if (isCandidate !== undefined) {
+    if (isDropout !== undefined) {
       qValues.push(`"ischiefdropout"=$${pId}`);
       values.push(isDropout);
       pId += 1;

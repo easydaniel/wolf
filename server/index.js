@@ -616,5 +616,5 @@ authServer.applyMiddleware({ app, path: "/auth" });
 // The `listen` method launches a web server.
 var port = process.env.PORT || 4000;
 app.listen({ port }, () =>
-  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+  console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`)
 );

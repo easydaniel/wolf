@@ -1,14 +1,43 @@
 version: '3.1'
 
 services:
-
+  server:
+    image: nginx:latest
+    ports:
+      - 8000:80
+      - 8001:443
+    restart: always
+    depends_on:
+      - app
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+  app:
+    ports:
+      - "4000:4000"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL="postgresql://postgres:test@db/postgres"
+    depends_on:
+      - db
   db:
     ports:
     - "5432:5432"
     image: postgres:15.3
     restart: always
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: test
+      POSTGRES_DB: postgres
+      POSTGRES_HOST_AUTH_METHOD: md5
     volumes:
     #mapping the db path to the host folder
     - ./db/data:/var/lib/postgresql/data
